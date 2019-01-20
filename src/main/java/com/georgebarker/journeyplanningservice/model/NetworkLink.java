@@ -15,14 +15,13 @@ public class NetworkLink {
     private long linkId;
 
     private Float linkLength;
-    private Double linkCost;
+    private double linkCost;
 
     private long lanes;
 
     private String carriageway;
     private String direction;
     private String linkName;
-    private String linkType;
 
     private long startNodeId;
     private long endNodeId;
@@ -157,19 +156,7 @@ public class NetworkLink {
     public void setLinkName(String linkName) {
         this.linkName = linkName;
     }
-
-    public String getLinkType() {
-        return linkType;
-    }
-
-    public void setLinkType(String linkType) {
-        this.linkType = linkType;
-    }
-
-//    public String getTranslatedDirection() {
-//        return translateNetworkModelDirectionTypeToDatex2DirectionType(this.direction);
-//    }
-
+    
     public void setEndNodeLatitude(double endNodeLatitude) {
         this.endNodeLatitude = endNodeLatitude;
     }
@@ -222,11 +209,11 @@ public class NetworkLink {
         return linkId == rhs.getLinkId();
     }
 
-    public Double getLinkCost() {
+    public double getLinkCost() {
         return linkCost;
     }
 
-    public void setLinkCost(Double linkCost) {
+    public void setLinkCost(double linkCost) {
         this.linkCost = linkCost;
     }
 

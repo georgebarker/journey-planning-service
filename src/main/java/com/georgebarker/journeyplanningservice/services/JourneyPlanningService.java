@@ -59,7 +59,9 @@ public class JourneyPlanningService {
         }
 
         if (journeyTimeGraph.get() == null) {
+            LOG.info("Journey time graph is yet to be created in this instance, creating now...");
             createJourneyTimeGraph();
+            LOG.info("Journey time graph created.");
         }
 
         final DijkstraShortestPath<NetworkNode, NetworkLinkEdge> pathFinder = new DijkstraShortestPath<>(
@@ -67,13 +69,20 @@ public class JourneyPlanningService {
 
         final List<NetworkLinkEdge> pathEdgeList = pathFinder.getPathEdgeList();
         addEdgesToList(startLink, endLink, networkLinkRoute, pathEdgeList);
-        
-        DateTime earliestArrivalTime = new DateTime(earliestArrivalTimeMillis);
-        DateTime latestArrivalTime = new DateTime(latestArrivalTimeMillis);
+
+        DateTime earliestArrivalTime = convertMillisToDateTime(earliestArrivalTimeMillis);
+        DateTime latestArrivalTime = convertMillisToDateTime(latestArrivalTimeMillis);
 
         return createRoutesForSpecifiedInterval(earliestArrivalTime, latestArrivalTime, networkLinkRoute);
     }
 
+    private DateTime convertMillisToDateTime(long dateTimeMillis) {
+        /*
+         * Strips the date of any seconds or milliseconds that may have been sent from
+         * the client to get the nearest 15 minute interval.
+         */
+        return new DateTime(dateTimeMillis).secondOfMinute().setCopy(0).millisOfSecond().setCopy(0);
+    }
 
     private List<Route> createRoutesForSpecifiedInterval(DateTime earliestArrivalTime, DateTime latestArrivalTime,
             final List<NetworkLink> networkLinkRoute) {
@@ -89,10 +98,8 @@ public class JourneyPlanningService {
         }
 
         setOptimalRoute(routes);
-
         return routes;
     }
-   
 
     private void setOptimalRoute(List<Route> routes) {
         Route route = Collections.min(routes, Comparator.comparing(r -> r.getMinutesToTravel()));
