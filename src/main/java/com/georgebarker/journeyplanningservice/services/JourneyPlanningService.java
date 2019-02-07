@@ -51,8 +51,29 @@ public class JourneyPlanningService {
     public List<Route> getRoutes(final long startLinkId, final long endLinkId, long earliestArrivalTimeMillis,
             long latestArrivalTimeMillis) {
         final List<NetworkLink> networkLinkRoute = new LinkedList<>();
+        if (parametersAreInvalid(startLinkId, endLinkId, earliestArrivalTimeMillis, latestArrivalTimeMillis)) {
+            throw new IllegalArgumentException("Parameters are not valid.");
+        }
+
+        DateTime earliestArrivalTime = convertMillisToDateTime(earliestArrivalTimeMillis);
+        DateTime latestArrivalTime = convertMillisToDateTime(latestArrivalTimeMillis);
+
+        if (!earliestAndLatestArrivalTimesAreValid(earliestArrivalTime, latestArrivalTime)) {
+            throw new IllegalArgumentException(
+                    "Could not perform journey plan for the specified dates; journey planning across multiple days is not yet supported.");
+        }
+
         final NetworkLink startLink = networkLinkService.findById(startLinkId);
         final NetworkLink endLink = networkLinkService.findById(endLinkId);
+
+        if (startLink == null) {
+            throw new IllegalArgumentException("Start link not found.");
+        }
+
+        if (endLink == null) {
+            throw new IllegalArgumentException("End link not found.");
+        }
+
         NetworkNode startNode = startLink.getEndNode();
         if (startLink == endLink) {
             startNode = startLink.getStartNode();
@@ -69,9 +90,6 @@ public class JourneyPlanningService {
 
         final List<NetworkLinkEdge> pathEdgeList = pathFinder.getPathEdgeList();
         addEdgesToList(startLink, endLink, networkLinkRoute, pathEdgeList);
-
-        DateTime earliestArrivalTime = convertMillisToDateTime(earliestArrivalTimeMillis);
-        DateTime latestArrivalTime = convertMillisToDateTime(latestArrivalTimeMillis);
 
         return createRoutesForSpecifiedInterval(earliestArrivalTime, latestArrivalTime, networkLinkRoute);
     }
@@ -144,24 +162,9 @@ public class JourneyPlanningService {
                 route.add(edge.getLink());
             }
         } else {
-            LOG.info(String.format("Unable to find path between nodes %d to %d", startLink.getLinkId(),
-                    endLink.getLinkId()));
+            throw new IllegalArgumentException(String.format("Unable to find path between nodes %d to %d",
+                    startLink.getLinkId(), endLink.getLinkId()));
         }
-    }
-
-    public List<NetworkLink> getAffectedLinks(final NetworkNode upstreamNode, final NetworkNode framedNode) {
-        final List<NetworkLink> route = new LinkedList<>();
-        final DijkstraShortestPath<NetworkNode, NetworkLinkEdge> pathFinder = new DijkstraShortestPath<>(
-                journeyTimeGraph.get(), upstreamNode, framedNode);
-        final List<NetworkLinkEdge> pathEdgeList = pathFinder.getPathEdgeList();
-        if (pathEdgeList != null) {
-            for (final NetworkLinkEdge edge : pathEdgeList) {
-                route.add(edge.getLink());
-            }
-        } else {
-            LOG.info(String.format("Unable to find path between nodes %s to %s", upstreamNode, framedNode));
-        }
-        return route;
     }
 
     private void createJourneyTimeGraph() {
@@ -247,8 +250,21 @@ public class JourneyPlanningService {
 
     private long calculateNewBeginMinute(long beginMinute, double minutesToTravelLink) {
         double beginMinuteDouble = beginMinute - minutesToTravelLink;
-        // this is probably wrong, I need to find the correct 15 minute interval.
-        return 15 * (Math.round(beginMinuteDouble / 15));
+        return FIFTEEN_MINUTES * (Math.round(beginMinuteDouble / FIFTEEN_MINUTES));
 
+    }
+
+    private boolean parametersAreInvalid(final long startLinkId, final long endLinkId, long earliestArrivalTimeMillis,
+            long latestArrivalTimeMillis) {
+        return startLinkId == 0 || endLinkId == 0 || earliestArrivalTimeMillis == 0 || latestArrivalTimeMillis == 0;
+    }
+
+    /*
+     * The calculations currently only work if the journey plan is performed on the
+     * same day.
+     */
+    private boolean earliestAndLatestArrivalTimesAreValid(DateTime earliestArrivalTime, DateTime latestArrivalTime) {
+        return earliestArrivalTime.getDayOfYear() == latestArrivalTime.getDayOfYear()
+                && earliestArrivalTime.getYear() == latestArrivalTime.getYear();
     }
 }

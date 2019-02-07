@@ -27,10 +27,6 @@ public class ProfileDataService {
 
     public Map<NetworkLink, List<ProfileData>> getProfileDataForLinks(List<NetworkLink> networkLinks,
             DateTime earliestArrivalTime, DateTime latestArrivalTime) {
-        /*
-         * Still need to figure out what to do when a user selects a route that crosses
-         * two different days.
-         */
         Long startDateDayTypeId = profileScheduleService.getDayTypeIdForDateTime(earliestArrivalTime);
         List<ProfileData> profileData = getProfileDataForNetworkLinksAndDayTypeId(networkLinks, startDateDayTypeId);
 
