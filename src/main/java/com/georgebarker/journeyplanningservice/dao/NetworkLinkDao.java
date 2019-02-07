@@ -22,7 +22,6 @@ public class NetworkLinkDao {
 
     public NetworkLink findById(long linkId) {
         return restTemplate.getForObject(networkLinkEndpoint + linkId, NetworkLink.class);
-
     }
 
     public List<NetworkLink> retrieveAllNetworkLinks() {
@@ -30,5 +29,4 @@ public class NetworkLinkDao {
                 new ParameterizedTypeReference<List<NetworkLink>>() {
                 }).getBody();
     }
-
 }

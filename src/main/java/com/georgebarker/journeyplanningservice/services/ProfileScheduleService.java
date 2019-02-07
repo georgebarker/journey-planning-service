@@ -12,7 +12,7 @@ public class ProfileScheduleService {
     @Autowired
     ProfileScheduleDao profileScheduleDao;
     
-    public Long getDayTypeIdForDateTime(DateTime localDateTime) {
-        return profileScheduleDao.findById(localDateTime.toDate()).get().getDayTypeId();
+    public Long getDayTypeIdForDateTime(DateTime dateTime) {
+        return profileScheduleDao.findById(dateTime.toDate()).get().getDayTypeId();
     }
 }
