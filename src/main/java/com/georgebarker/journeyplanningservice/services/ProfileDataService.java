@@ -36,13 +36,13 @@ public class ProfileDataService {
 
     }
 
-    public ProfileData getProfileDataForBeginMinute(List<ProfileData> profileData, long beginMinute) {
+    public ProfileData getProfileDataForBeginMinute(List<ProfileData> profileData, long beginMinute, long linkId) {
         for (ProfileData data : profileData) {
             if (data.getProfileDataPK().getBeginMinute() == beginMinute) {
                 return data;
             }
         }
-        System.out.println("Couldn't find profile data for link: " + profileData.get(0).getLinkId()
+        System.out.println("Couldn't find profile data for link: " + linkId
                 + " at begin minute: " + beginMinute);
         return null;
     }

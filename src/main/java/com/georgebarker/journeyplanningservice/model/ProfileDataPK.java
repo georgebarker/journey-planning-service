@@ -22,6 +22,12 @@ public class ProfileDataPK implements Serializable {
         this.dayTypeId = dayTypeId;
         this.linkId = linkId;
     }
+    
+    // Constructor that's easier for testing with
+    public ProfileDataPK(Long dayTypeId, Long linkId, Long beginMinute) {
+        this(dayTypeId, linkId);
+        this.beginMinute = beginMinute;
+    }
 
     @Column(name = "DAY_TYPE_ID")
     public long getDayTypeId() {

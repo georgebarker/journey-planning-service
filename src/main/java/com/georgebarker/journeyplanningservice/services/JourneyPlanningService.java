@@ -134,7 +134,7 @@ public class JourneyPlanningService {
         double minutesToTravelRoute = 0L;
         for (NetworkLink networkLink : recalculatedRoute) {
             List<ProfileData> profileDataForLink = profileDataMap.get(networkLink);
-            ProfileData data = profileDataService.getProfileDataForBeginMinute(profileDataForLink, beginMinute);
+            ProfileData data = profileDataService.getProfileDataForBeginMinute(profileDataForLink, beginMinute, networkLink.getLinkId());
             double linkCost = data.getSpeedMph();
             networkLink.setLinkCost(linkCost);
             float linkLengthInMiles = networkLink.getLinkLengthInMiles();

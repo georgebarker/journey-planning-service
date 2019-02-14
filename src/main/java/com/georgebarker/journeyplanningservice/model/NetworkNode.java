@@ -9,11 +9,11 @@ public class NetworkNode {
     private double latitude;
 
     public NetworkNode(long nodeId, double longitude, double latitude) {
-		super();
-		this.nodeId = nodeId;
-		this.longitude = longitude;
-		this.latitude = latitude;
-	}
+        super();
+        this.nodeId = nodeId;
+        this.longitude = longitude;
+        this.latitude = latitude;
+    }
 
     public long getNodeId() {
         return nodeId;
@@ -31,12 +31,10 @@ public class NetworkNode {
         this.longitude = longitude;
     }
 
-    
     public double getLongitude() {
         return longitude;
     }
 
-    
     public double getLatitude() {
         return latitude;
     }
@@ -44,6 +42,22 @@ public class NetworkNode {
     @Override
     public String toString() {
         return ToStringBuilder.reflectionToString(this);
+    }
+
+    @Override
+    public int hashCode() {
+        return (int) (nodeId % Integer.MAX_VALUE);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this) {
+            return true;
+        }
+        if (!(obj instanceof NetworkNode)) {
+            return false;
+        }
+        return nodeId == ((NetworkNode) obj).nodeId;
     }
 
 }

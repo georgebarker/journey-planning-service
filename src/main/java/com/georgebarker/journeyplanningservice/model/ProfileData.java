@@ -19,6 +19,13 @@ public class ProfileData {
 
     public ProfileData() {
     }
+    
+    //Constructor that makes it easier for testing
+    public ProfileData(ProfileDataPK profileDataPK, Long endMinute, Long speedMph) {
+        this.profileDataPK = profileDataPK;
+        this.endMinute = endMinute;
+        this.speedMph = speedMph;
+    }
 
     public ProfileDataPK getProfileDataPK() {
         return profileDataPK;
