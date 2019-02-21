@@ -47,9 +47,3 @@ public class Route {
     }
 
 }
-
-/*
- * My final return object should be a List<Route> Route: List<NetworkLink>
- * route; double minutesToTravel; DateTime arrivalTime; DateTime departureTime
- * (arrivalTime.minusMinutes(minutesToTravel); isOptimalRoute?
- */

@@ -84,7 +84,3 @@ public class ProfileDataPK implements Serializable {
         return true;
     }
 }
-
-/*
- * "DAY_TYPE_ID" INTEGER, "LINK_ID" INTEGER, "BEGIN_MINUTE" INTEGER,
- */
